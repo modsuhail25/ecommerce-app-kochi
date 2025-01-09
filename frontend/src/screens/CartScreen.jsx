@@ -1,12 +1,18 @@
-import React from "react";
 import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap";
 import Message from "../components/Message";
 import { FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { removeFromCart } from "../slices/cartSlice";
 
 const CartScreen = () => {
   const { cartItems } = useSelector((state) => state.cart);
+
+  const dispatch = useDispatch();
+
+  const removeFromCartHandler = (id) => {
+    dispatch(removeFromCart(id));
+  };
   return (
     <Row>
       <Col md={8}>
@@ -29,7 +35,13 @@ const CartScreen = () => {
                   <Col md={2}>${item.price}</Col>
 
                   <Col md={2}>
-                    <Button type="button" variant="light">
+                    <Button
+                      type="button"
+                      variant="light"
+                      onClick={() => {
+                        removeFromCartHandler(item._id);
+                      }}
+                    >
                       <FaTrash />
                     </Button>
                   </Col>
