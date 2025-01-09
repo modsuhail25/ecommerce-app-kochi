@@ -17,11 +17,9 @@ const Header = () => {
             <Nav className="ms-auto">
               <Nav.Link as={Link} to="/cart">
                 <FaShoppingCart /> Cart
-                {cartItems.length > 0 && (
-                  <Badge pill bg="success" style={{ marginLeft: "5px" }}>
-                    {cartItems.reduce((acc, item) => acc + Number(item.qty), 0)}
-                  </Badge>
-                )}
+                <Badge pill bg="success" style={{ marginLeft: "5px" }}>
+                  {cartItems.reduce((acc, item) => acc + Number(item.qty), 0)}
+                </Badge>
               </Nav.Link>
               <Nav.Link as={Link} to="/login">
                 <FaUser /> Sign In
