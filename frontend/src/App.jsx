@@ -10,6 +10,7 @@ import ProductScreen from "./screens/ProductScreen";
 import CartScreen from "./screens/CartScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         </Container>
       </main>
       <Footer />
+      <ToastContainer />
     </>
   );
 }
