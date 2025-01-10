@@ -9,7 +9,7 @@ import {
 } from "react-bootstrap";
 import Message from "../components/Message";
 import { FaTrash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, removeFromCart } from "../slices/cartSlice";
 
@@ -17,6 +17,7 @@ const CartScreen = () => {
   const { cartItems } = useSelector((state) => state.cart);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const addToCartHandler = (product, qty) => {
     dispatch(addToCart({ ...product, qty }));
@@ -25,6 +26,11 @@ const CartScreen = () => {
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
   };
+
+  const checkOutHandler = () => {
+    navigate("/login?redirect=/shipping");
+  };
+
   return (
     <Row>
       <Col md={8}>
@@ -95,6 +101,7 @@ const CartScreen = () => {
                 type="button"
                 className="btn-block"
                 disabled={cartItems.length === 0}
+                onClick={checkOutHandler}
               >
                 Proceed To Checkout
               </Button>

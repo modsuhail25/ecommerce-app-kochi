@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../components/FormContainer";
 import { useRegsiterUserMutation } from "../slices/userApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
 
 const RegisterScreen = () => {
   const [name, setName] = useState("");
@@ -18,6 +19,11 @@ const RegisterScreen = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { search } = useLocation();
+
+  const sp = new URLSearchParams(search);
+  const redirect = sp.get("redirect") || "/";
+
   const [register, { isLoading }] = useRegsiterUserMutation();
 
   const submitHandler = async (e) => {
@@ -28,7 +34,6 @@ const RegisterScreen = () => {
     } else {
       try {
         const res = await register({ name, email, password }).unwrap();
-        console.log(res);
         dispatch(setCredentials({ ...res }));
         navigate("/");
       } catch (err) {
@@ -39,9 +44,9 @@ const RegisterScreen = () => {
 
   useEffect(() => {
     if (userInfo) {
-      navigate("/");
+      navigate(redirect);
     }
-  }, [navigate, userInfo]);
+  }, [userInfo, navigate, redirect]);
 
   return (
     <FormContainer>
@@ -90,10 +95,11 @@ const RegisterScreen = () => {
           Register
         </Button>
       </Form>
-
+      {isLoading && <Loader />}
       <Row className="py-3">
         <Col>
-          Already have an account? <Link to={"/login"}>Login</Link>
+          Already have an account?{" "}
+          <Link to={`/login/?redirect=${redirect}`}>Login</Link>
         </Col>
       </Row>
     </FormContainer>
