@@ -2,6 +2,7 @@ import asyncHandler from "../middlewares/asyncHandler.js";
 import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import generateToken from "../utils/generateToken.js";
 
 const registerUser = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -23,6 +24,8 @@ const registerUser = asyncHandler(async (req, res, next) => {
   });
 
   if (user) {
+    // generate token
+    generateToken(res, user._id);
     res.status(200).json({
       _id: user._id,
       name: user.name,
@@ -41,16 +44,7 @@ const authUser = asyncHandler(async (req, res, next) => {
 
   if (user && (await user.matchPassword(password))) {
     // generate token
-    let token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: "1d",
-    });
-
-    res.cookie("jwt", token, {
-      secure: false,
-      sameSite: "strict", //prevent csrf attacks
-      maxage: 60 * 60 * 1000, //1 day in milliseconds
-      httpOnly: true, //after login ,jwt is stored in the frontend;s cookies as httplOnly cookie,so request after login will be attatched with the jwt token stored in the cookies
-    });
+    generateToken(res, user._id);
     res.status(200).json({
       _id: user._id,
       name: user.name,
