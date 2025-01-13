@@ -9,7 +9,12 @@ const orderApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    getOrderById: build.query({
+      query: (id) => ({
+        url: `/api/orders/${id}`,
+      }),
+    }),
   }),
 });
 
-export const { useCreateOrderMutation } = orderApiSlice;
+export const { useCreateOrderMutation, useGetOrderByIdQuery } = orderApiSlice;
