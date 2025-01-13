@@ -3,11 +3,11 @@ import { updateCart } from "../utils/cartutils";
 
 const initialState = localStorage.getItem("cart")
   ? JSON.parse(localStorage.getItem("cart"))
-  : { cartItems: [] };
-
-const addDecimal = (num) => {
-  return num.toFixed(2);
-};
+  : {
+      cartItems: [],
+      shippingAddress: { address: "", city: "", postalCode: "", country: "" },
+      paymentMethod: "",
+    };
 
 const cartSlice = createSlice({
   name: "cart",
@@ -31,10 +31,29 @@ const cartSlice = createSlice({
       state.cartItems = state.cartItems.filter((x) => x._id !== action.payload);
       return updateCart(state);
     },
-    resetCart: (state) => (state = initialState),
+    resetCart: (state) =>
+      (state = {
+        cartItems: [],
+        shippingAddress: { address: "", city: "", postalCode: "", country: "" },
+        paymentMethod: "",
+      }),
+    saveShippingAddress: (state, action) => {
+      state.shippingAddress = action.payload;
+      localStorage.setItem("cart", JSON.stringify(state));
+    },
+    savePaymentMethod: (state, action) => {
+      state.paymentMethod = action.payload;
+      localStorage.setItem("cart", JSON.stringify(state));
+    },
   },
 });
 
-export const { addToCart, removeFromCart, resetCart } = cartSlice.actions;
+export const {
+  addToCart,
+  removeFromCart,
+  resetCart,
+  saveShippingAddress,
+  savePaymentMethod,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;
