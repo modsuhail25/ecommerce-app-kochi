@@ -16,6 +16,11 @@ import PaymentScreen from "./screens/PaymentScreen";
 import PrivateRoutes from "./components/PrivateRoutes";
 import PlaceOrderScreen from "./screens/PlaceOrderScreen";
 import OrderScreen from "./screens/OrderScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import AdminRoutes from "./components/AdminRoutes";
+import OrderListScreen from "./screens/admin/OrderListScreen";
+import ProductListScreen from "./screens/admin/ProductListScreen";
+import UserListScreen from "./screens/admin/UserListScreen";
 
 function App() {
   return (
@@ -30,11 +35,23 @@ function App() {
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/cart" element={<CartScreen />} />
 
+            {/* Private Routes */}
             <Route path="" element={<PrivateRoutes />}>
               <Route path="/shipping" element={<ShippingScreen />} />
               <Route path="/payment" element={<PaymentScreen />} />
               <Route path="/placeorder" element={<PlaceOrderScreen />} />
               <Route path="/order/:id" element={<OrderScreen />} />
+              <Route path="/profile" element={<ProfileScreen />} />
+            </Route>
+
+            {/* Admin Routes */}
+            <Route path="" element={<AdminRoutes />}>
+              <Route path="/admin/orderlist" element={<OrderListScreen />} />
+              <Route
+                path="/admin/productlist"
+                element={<ProductListScreen />}
+              />
+              <Route path="/admin/userlist" element={<UserListScreen />} />
             </Route>
           </Routes>
         </Container>
