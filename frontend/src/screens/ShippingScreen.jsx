@@ -8,7 +8,6 @@ import CheckoutSteps from "../components/CheckoutSteps";
 
 const ShippingScreen = () => {
   const { shippingAddress } = useSelector((state) => state.cart);
-  console.log(shippingAddress);
 
   const [address, setAddress] = useState(shippingAddress.address || "");
   const [city, setCity] = useState(shippingAddress.city || "");

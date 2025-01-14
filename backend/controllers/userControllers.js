@@ -14,13 +14,13 @@ const registerUser = asyncHandler(async (req, res, next) => {
     throw new Error("User Already Exists");
   }
 
-  const salt = await bcrypt.genSalt(10);
-  const encryptedPassword = await bcrypt.hash(password, salt);
+  // const salt = await bcrypt.genSalt(10);
+  // const encryptedPassword = await bcrypt.hash(password, salt);
 
   const user = await User.create({
     name,
     email,
-    password: encryptedPassword,
+    password,
   });
 
   if (user) {
@@ -30,6 +30,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      isAdmin: user.isAdmin,
     });
   } else {
     res.status(400);
@@ -49,6 +50,7 @@ const authUser = asyncHandler(async (req, res, next) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      isAdmin: user.isAdmin,
     });
   } else {
     res.status(400);
@@ -67,4 +69,30 @@ const logout = (req, res) => {
 
 const getUserProfile = () => {};
 
-export { registerUser, authUser, logout, getUserProfile };
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const { name, email, password } = req.body;
+
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    user.name = name || user.name;
+    user.email = email || user.email;
+
+    if (password) {
+      user.password = password;
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+    });
+  } else {
+    res.status(404);
+    throw new Error("User Not Found");
+  }
+});
+
+export { registerUser, authUser, logout, getUserProfile, updateUserProfile };

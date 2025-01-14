@@ -40,6 +40,11 @@ const getMyOrders = async (req, res) => {
   res.json(orders);
 };
 
+const getOrders = async (req, res) => {
+  const orders = await Order.find().populate("user", "name email");
+  res.json(orders);
+};
+
 const getOrderById = async (req, res) => {
   const order = await Order.findById(req.params.id).populate(
     "user",
@@ -54,4 +59,4 @@ const getOrderById = async (req, res) => {
   }
 };
 
-export { createOrder, getMyOrders, getOrderById };
+export { createOrder, getMyOrders, getOrderById, getOrders };
