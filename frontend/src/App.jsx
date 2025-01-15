@@ -21,6 +21,7 @@ import AdminRoutes from "./components/AdminRoutes";
 import OrderListScreen from "./screens/admin/OrderListScreen";
 import ProductListScreen from "./screens/admin/ProductListScreen";
 import UserListScreen from "./screens/admin/UserListScreen";
+import ProductEditScreen from "./screens/admin/ProductEditScreen";
 
 function App() {
   return (
@@ -50,6 +51,10 @@ function App() {
               <Route
                 path="/admin/productlist"
                 element={<ProductListScreen />}
+              />
+              <Route
+                path="/admin/product/:id"
+                element={<ProductEditScreen />}
               />
               <Route path="/admin/userlist" element={<UserListScreen />} />
             </Route>

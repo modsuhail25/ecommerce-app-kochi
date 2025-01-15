@@ -1,11 +1,28 @@
 import { Button, Col, Row, Table } from "react-bootstrap";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
-import { useGetProductsQuery } from "../../slices/prouctApiSlice";
+import {
+  useCreateProductMutation,
+  useGetProductsQuery,
+} from "../../slices/prouctApiSlice";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
+import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const ProductListScreen = () => {
   const { data: products, isLoading, error } = useGetProductsQuery();
+
+  const [createProduct] = useCreateProductMutation();
+
+  const createProductHandler = async () => {
+    try {
+      await createProduct();
+      toast.success("Product Created");
+    } catch (err) {
+      toast.error(err?.data?.message);
+    }
+  };
+
   const deleteHandler = () => {};
 
   return (
@@ -15,7 +32,7 @@ const ProductListScreen = () => {
           <h1>Products</h1>
         </Col>
         <Col className="text-end">
-          <Button className="btn-sm m-3">
+          <Button className="btn-sm m-3" onClick={createProductHandler}>
             <FaPlus /> Create Product
           </Button>
         </Col>
@@ -46,7 +63,12 @@ const ProductListScreen = () => {
                   <td>{product.category}</td>
                   <td>{product.brand}</td>
                   <td>
-                    <Button variant="light" className="btn-sm mx-2">
+                    <Button
+                      as={Link}
+                      to={`/admin/product/${product._id}`}
+                      variant="light"
+                      className="btn-sm mx-2"
+                    >
                       <FaEdit />
                     </Button>
 

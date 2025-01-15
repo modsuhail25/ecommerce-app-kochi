@@ -6,13 +6,44 @@ const productApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: "/api/products",
       }),
+      providesTags: ["Products"],
     }),
     getProductById: build.query({
       query: (id) => ({
         url: `/api/products/${id}`,
       }),
+      providesTags: ["Product"],
+    }),
+    createProduct: build.mutation({
+      query: () => ({
+        url: `/api/products`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Products"],
+    }),
+    udpateProduct: build.mutation({
+      query: (data) => ({
+        url: `/api/products/${data.id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Products", "Product"],
+    }),
+    uploadProductImage: build.mutation({
+      query: (data) => ({
+        url: `/api/uploads`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Products", "Product"],
     }),
   }),
 });
 
-export const { useGetProductsQuery, useGetProductByIdQuery } = productApiSlice;
+export const {
+  useGetProductsQuery,
+  useGetProductByIdQuery,
+  useCreateProductMutation,
+  useUdpateProductMutation,
+  useUploadProductImageMutation,
+} = productApiSlice;
