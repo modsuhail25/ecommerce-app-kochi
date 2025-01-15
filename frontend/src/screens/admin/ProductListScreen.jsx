@@ -84,7 +84,7 @@ const ProductListScreen = () => {
                   <td>
                     <Button
                       as={Link}
-                      to={`/admin/product/${product._id}`}
+                      to={`/admin/product/${product._id}/edit`}
                       variant="light"
                       className="btn-sm mx-2"
                     >
