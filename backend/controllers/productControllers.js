@@ -88,10 +88,48 @@ const deleteProduct = asyncHandler(async (req, res) => {
   }
 });
 
+const createProductReviews = asyncHandler(async (req, res) => {
+  const { rating, comment } = req.body;
+
+  const product = await Product.findById(req.params.id);
+
+  if (product) {
+    const alreadyReviewd = product.reviews.find(
+      (item) => item.user.toString() == req.user._id.toString()
+    );
+
+    if (alreadyReviewd) {
+      res.status(404);
+      throw new Error("Product Already Reviewed");
+    }
+
+    const review = {
+      name: req.user.name,
+      rating,
+      comment,
+      user: req.user._id,
+    };
+
+    product.reviews.push(review);
+    product.numReviews = product.reviews.length;
+    product.rating =
+      product.reviews.reduce((acc, item) => item.rating, 0) /
+      product.reviews.length;
+
+    const updatedProduct = await product.save();
+
+    res.status(201).json(updatedProduct);
+  } else {
+    res.status(404);
+    throw new Error("Product not found");
+  }
+});
+
 export {
   getProducts,
   createProduct,
   getProductsById,
   updateProduct,
   deleteProduct,
+  createProductReviews,
 };

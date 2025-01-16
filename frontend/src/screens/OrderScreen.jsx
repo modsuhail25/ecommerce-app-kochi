@@ -22,11 +22,13 @@ const OrderScreen = () => {
             <ListGroup.Item>
               <h2>Shipping</h2>
               <p>
-                <strong>Name: </strong> {order.user.name}
+                <strong>Name: </strong> {order?.user?.name}
               </p>
               <p>
                 <strong>Email: </strong>
-                <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
+                <a href={`mailto:${order?.user?.email}`}>
+                  {order?.user?.email}
+                </a>
               </p>
               <p>
                 <strong>Address:</strong>
@@ -65,7 +67,7 @@ const OrderScreen = () => {
                       <Row>
                         <Col md={1}>
                           <Image
-                            src={item.image}
+                            src={`http://localhost:5000${item.image}`}
                             alt={item.name}
                             fluid
                             rounded

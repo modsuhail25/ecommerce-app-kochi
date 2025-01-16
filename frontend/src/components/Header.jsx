@@ -1,7 +1,7 @@
 import { Badge, Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../slices/userApiSlice";
 import { logout } from "../slices/authSlice";
 import { resetCart } from "../slices/cartSlice";
@@ -11,6 +11,7 @@ const Header = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [logoutApiCall] = useLogoutMutation();
 
@@ -18,6 +19,7 @@ const Header = () => {
     await logoutApiCall().unwrap();
     dispatch(logout()); //removes localstorage data
     dispatch(resetCart()); //removes cart data from redux store
+    navigate("/");
   };
 
   return (
