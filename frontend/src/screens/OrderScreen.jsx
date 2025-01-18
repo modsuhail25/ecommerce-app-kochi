@@ -1,5 +1,5 @@
 import Loader from "../components/Loader";
-import { Card, Col, Image, ListGroup, Row } from "react-bootstrap";
+import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap";
 import {
   useDeliverOrderMutation,
   useGetOrderByIdQuery,
@@ -7,18 +7,26 @@ import {
 import Message from "../components/Message";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const OrderScreen = () => {
   const { id } = useParams();
 
   const { userInfo } = useSelector((state) => state.auth);
 
-  const { isLoading, data: order, error } = useGetOrderByIdQuery(id);
+  const { isLoading, data: order, error, refetch } = useGetOrderByIdQuery(id);
 
   const [deliveOrder, { isLoading: loadingDeliver }] =
     useDeliverOrderMutation();
 
-  const deliverHandler = async () => {};
+  const deliverHandler = async () => {
+    try {
+      await deliveOrder(id).unwrap();
+      refetch();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   return isLoading ? (
     <Loader />
