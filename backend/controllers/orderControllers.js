@@ -9,6 +9,7 @@ const createOrder = async (req, res) => {
     taxPrice,
     shippingPrice,
     totalPrice,
+    paymentResult,
   } = req.body;
 
   if (cartItems && cartItems.length === 0) {
@@ -28,6 +29,7 @@ const createOrder = async (req, res) => {
       taxPrice,
       shippingPrice,
       totalPrice,
+      paymentResult: { id: paymentResult },
     });
 
     const createdOrder = await order.save();
@@ -59,4 +61,49 @@ const getOrderById = async (req, res) => {
   }
 };
 
-export { createOrder, getMyOrders, getOrderById, getOrders };
+// @desc    Update order to delivered
+// @route   GET /api/orders/:id/deliver
+// @access  Private/Admin
+const updateOrderToDelivered = async (req, res) => {
+  const order = await Order.findById(req.params.id);
+
+  if (order) {
+    order.isDelivered = true;
+    order.deliveredAt = Date.now();
+
+    const updatedOrder = await order.save();
+
+    res.json(updatedOrder);
+  } else {
+    res.status(404);
+    throw new Error("Order not found");
+  }
+};
+
+// @desc    Update order to delivered
+// @route   GET /api/orders/:id/deliver
+// @access  Private/Admin
+const updateOrderToPaid = async (req, res) => {
+  const order = await Order.findById(req.params.id);
+
+  if (order) {
+    order.isPaid = true;
+    order.paidAt = Date.now();
+
+    const updatedOrder = await order.save();
+
+    res.json(updatedOrder);
+  } else {
+    res.status(404);
+    throw new Error("Order not found");
+  }
+};
+
+export {
+  createOrder,
+  getMyOrders,
+  getOrderById,
+  getOrders,
+  updateOrderToPaid,
+  updateOrderToDelivered,
+};

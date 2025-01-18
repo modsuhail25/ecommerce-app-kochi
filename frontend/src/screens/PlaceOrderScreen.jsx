@@ -3,7 +3,10 @@ import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import { Link, useNavigate } from "react-router-dom";
-import { useCreateOrderMutation } from "../slices/orderApiSlice";
+import {
+  useCreateOrderMutation,
+  usePayOrderMutation,
+} from "../slices/orderApiSlice";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
@@ -17,22 +20,45 @@ const PlaceOrderScreen = () => {
 
   const [createOrder, { error, isLoading }] = useCreateOrderMutation();
 
+  const [payOrder] = usePayOrderMutation();
+
   const placeOrderHandler = async () => {
-    try {
-      const res = await createOrder({
-        cartItems: cart.cartItems,
-        shippingAddress: cart.shippingAddress,
-        paymentMethod: cart.paymentMethod,
-        itemsPrice: cart.itemsPrice,
-        taxPrice: cart.taxPrice,
-        shippingPrice: cart.shippingPrice,
-        totalPrice: cart.totalPrice,
-      }).unwrap();
-      dispatch(clearCartItems());
-      navigate(`/order/${res._id}`);
-    } catch (error) {
-      toast.error(error.message);
-    }
+    const options = {
+      key: "rzp_test_ZZp21cOkmVVfuN",
+      key_secret: "fAZI9Q35VXCZOxYdMYJF7faD", // Enter the Key ID generated from the Dashboard
+      amount: parseInt(cart.totalPrice * 100), // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      currency: "INR",
+      name: "Ecommerce", //your business name
+      description: "Test Transaction",
+      handler: async function (response) {
+        console.log(response);
+
+        const paymentId = response.razorpay_payment_id;
+        try {
+          const res = await createOrder({
+            cartItems: cart.cartItems,
+            shippingAddress: cart.shippingAddress,
+            paymentMethod: cart.paymentMethod,
+            paymentResult: paymentId,
+            itemsPrice: cart.itemsPrice,
+            taxPrice: cart.taxPrice,
+            shippingPrice: cart.shippingPrice,
+            totalPrice: cart.totalPrice,
+          }).unwrap();
+          dispatch(clearCartItems());
+          await payOrder(res._id);
+          navigate(`/order/${res._id}`);
+        } catch (error) {
+          toast.error(error.message);
+        }
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+
+    const pay = new window.Razorpay(options);
+    pay.open();
   };
 
   useEffect(() => {

@@ -1,13 +1,24 @@
 import Loader from "../components/Loader";
 import { Card, Col, Image, ListGroup, Row } from "react-bootstrap";
-import { useGetOrderByIdQuery } from "../slices/orderApiSlice";
+import {
+  useDeliverOrderMutation,
+  useGetOrderByIdQuery,
+} from "../slices/orderApiSlice";
 import Message from "../components/Message";
 import { Link, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const OrderScreen = () => {
   const { id } = useParams();
 
+  const { userInfo } = useSelector((state) => state.auth);
+
   const { isLoading, data: order, error } = useGetOrderByIdQuery(id);
+
+  const [deliveOrder, { isLoading: loadingDeliver }] =
+    useDeliverOrderMutation();
+
+  const deliverHandler = async () => {};
 
   return isLoading ? (
     <Loader />
@@ -120,7 +131,22 @@ const OrderScreen = () => {
                 </Row>
               </ListGroup.Item>
               {/* PAY ORDER PLACEHOLDER */}
-              {/* {MARK AS DELIVERED PLACEHOLDER} */}
+              {loadingDeliver && <Loader />}
+
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.isPaid &&
+                !order.isDelivered && (
+                  <ListGroup.Item>
+                    <Button
+                      type="button"
+                      className="btn btn-block"
+                      onClick={deliverHandler}
+                    >
+                      Mark As Delivered
+                    </Button>
+                  </ListGroup.Item>
+                )}
             </ListGroup>
           </Card>
         </Col>
